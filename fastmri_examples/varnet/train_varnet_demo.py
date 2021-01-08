@@ -4,8 +4,13 @@ Copyright (c) Facebook, Inc. and its affiliates.
 This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
-
+import sys
 import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+print(os.path.join(BASE_DIR,'..'))
+sys.path.append(os.path.join(BASE_DIR,'..'))
+
 import pathlib
 from argparse import ArgumentParser
 
@@ -15,6 +20,7 @@ from fastmri.data.subsample import create_mask_for_mask_type
 from fastmri.data.transforms import VarNetDataTransform
 from fastmri.pl_modules import FastMriDataModule, VarNetModule
 
+from azureml_env_adapter import set_environment_variables
 
 def cli_main(args):
     pl.seed_everything(args.seed)
@@ -59,6 +65,10 @@ def cli_main(args):
         lr_gamma=args.lr_gamma,
         weight_decay=args.weight_decay,
     )
+
+
+    if int(args.num_nodes) > 1:
+        set_environment_variables()
 
     # ------------
     # trainer
@@ -162,7 +172,7 @@ def build_args():
     # configure checkpointing in checkpoint_dir
     checkpoint_dir = args.default_root_dir / "checkpoints"
     if not checkpoint_dir.exists():
-        checkpoint_dir.mkdir(parents=True)
+        checkpoint_dir.mkdir(parents=True, exist_ok=True)
 
     args.checkpoint_callback = pl.callbacks.ModelCheckpoint(
         filepath=args.default_root_dir / "checkpoints",

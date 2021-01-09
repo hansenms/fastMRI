@@ -68,7 +68,7 @@ def cli_main(args):
 
 
     if int(args.num_nodes) > 1:
-        set_environment_variables()
+         set_environment_variables()
 
     # ------------
     # trainer
@@ -170,12 +170,12 @@ def build_args():
     args = parser.parse_args()
 
     # configure checkpointing in checkpoint_dir
-    checkpoint_dir = args.default_root_dir / "checkpoints"
+    checkpoint_dir = pathlib.Path(args.default_root_dir) / "checkpoints"
     if not checkpoint_dir.exists():
         checkpoint_dir.mkdir(parents=True, exist_ok=True)
 
     args.checkpoint_callback = pl.callbacks.ModelCheckpoint(
-        filepath=args.default_root_dir / "checkpoints",
+        filepath=pathlib.Path(args.default_root_dir) / "checkpoints",
         save_top_k=True,
         verbose=True,
         monitor="validation_loss",

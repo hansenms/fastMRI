@@ -1,7 +1,12 @@
 import os
 
 def set_environment_variables():
-    os.environ["MASTER_ADDR"] = os.environ["AZ_BATCHAI_MPI_MASTER_NODE"]
+    # For AML BATCHAI
+    # os.environ["MASTER_ADDR"] = os.environ["AZ_BATCHAI_MPI_MASTER_NODE"]
+
+    # For AML AKS
+    os.environ["MASTER_ADDR"] = os.environ["MASTER_IP"]
+    
     os.environ["MASTER_PORT"] = "6105"
     os.environ["NODE_RANK"] = os.environ[
         "OMPI_COMM_WORLD_RANK"

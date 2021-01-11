@@ -1,12 +1,15 @@
 import os
 
 def set_environment_variables():
-    # For AML BATCHAI
-    # os.environ["MASTER_ADDR"] = os.environ["AZ_BATCHAI_MPI_MASTER_NODE"]
+    if "AZ_BATCHAI_MPI_MASTER_NODE" in os.environ:
+        # For AML BATCHAI
+        os.environ["MASTER_ADDR"] = os.environ["AZ_BATCHAI_MPI_MASTER_NODE"]
+    elif "MASTER_IP" in os.environ:
+        # AKS
+        os.environ["MASTER_ADDR"] = os.environ["MASTER_IP"]
+    else:
+        raise Exception("No relevant MASTER_ADDR candidates found in environment. Please set AZ_BATCHAI_MPI_MASTER_NODE or MASTER_IP")
 
-    # For AML AKS
-    os.environ["MASTER_ADDR"] = os.environ["MASTER_IP"]
-    
     os.environ["MASTER_PORT"] = "6105"
     os.environ["NODE_RANK"] = os.environ[
         "OMPI_COMM_WORLD_RANK"
